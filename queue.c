@@ -129,7 +129,26 @@ bool q_insert_tail(queue_t *q, char *s)
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
     /* You need to fix up this code. */
-    q->head = q->head->next;
+    if (!q || !q->head)
+        return false;
+    list_ele_t *temp;
+    temp = q->head;
+    /* Copy removed value to sp */
+    if (sp) {
+        strncpy(sp, temp->value, bufsize);
+        sp[bufsize - 1] = '\0';
+    }
+    /* If queue has only one node */
+    if (q->size == 1) {
+        q->head = NULL;
+        q->tail = NULL;
+    } else {
+        q->head = q->head->next;
+    }
+    q->size--;
+    /* Free temp */
+    free(temp->value);
+    free(temp);
     return true;
 }
 
@@ -141,6 +160,9 @@ int q_size(queue_t *q)
 {
     /* You need to write the code for this function */
     /* Remember: It should operate in O(1) time */
+    if (!q)
+        return 0;
+    return q->size;
     return 0;
 }
 
